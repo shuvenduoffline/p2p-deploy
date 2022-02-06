@@ -1,6 +1,7 @@
 const { throws } = require("assert");
 const crypto = require("crypto");
 const fs = require("fs");
+const path = require("path");
 
 const IV_LENGTH = 16; // For AES, this is always 16
 
@@ -22,7 +23,7 @@ function encrypt(text) {
 }
 
 function decrypt(text) {
-  if (!fs.existsSync(".key"))
+  if (!fs.existsSync(path.join(__dirname,".key")))
     throw new Error("'.key' file is missing! Please generate a key first!");
   const ENCRYPTION_KEY = fs.readFileSync(".key", "utf8");
   let textParts = text.split(":");

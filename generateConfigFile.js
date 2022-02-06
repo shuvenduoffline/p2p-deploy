@@ -20,10 +20,10 @@ const getDefaultData = () =>
         name: "Build project",
         command: "yarn build",
       },
-      // {
-      //   name: "Deploy project",
-      //   command: "pm2 start",
-      // },
+      {
+        name: "Deploy project",
+        command: "pm2 start",
+      },
     ],
   })}`;
 

@@ -1,4 +1,5 @@
 const { writeFileSync } = require("fs");
+const path = require("path");
 
 const allCapsAlpha = [..."ABCDEFGHIJKLMNOPQRSTUVWXYZ"];
 const allLowerAlpha = [..."abcdefghijklmnopqrstuvwxyz"];
@@ -23,10 +24,10 @@ const generateAndSaveKey = () => {
   saveAccessKey(generatedPassword);
 };
 
-const saveAccessKey = (generatedPassword) => {
+const saveAccessKey = (generatedPassword, dir = __dirname) => {
   if (!generatedPassword) throw new Error("key require");
   try {
-    writeFileSync(".key", generatedPassword);
+    writeFileSync(path.join(dir,".key"), generatedPassword);
     return generatedPassword;
   } catch (err) {
     console.log(`Something went wrong!`);

@@ -6,6 +6,7 @@ const {
   generateAndSaveKey,
 } = require("./generateAccessKeyAndSave");
 const fs = require("fs");
+const path = require("path");
 const commandExecutioner = require("./commandExecutioner");
 const http = require("http");
 
@@ -28,10 +29,10 @@ const commands = ["start", "stop", "renew", "setup", "help", "deploy"];
 // usage represents the help guide
 const usage = function () {
   const usageText = `
-  p2pd helps you updated deployed app on remote server.
+  p2p-deploy helps you updated deployed app on remote server.
 
   usage:
-    p2pd <command>
+    p2p-deploy <command>
 
     commands can be:
 
@@ -81,14 +82,13 @@ const takeKeyInput = () => {
         console.log("\nInvalid Key Passed");
       } else {
         console.log("Updating access key!");
-        saveAccessKey(input);
+        saveAccessKey(input, process.cwd());
+        generateDefaultConfigFile();
       }
     });
 
     mutableStdout.muted = true;
   }
-
-  generateDefaultConfigFile();
 };
 
 const generateDefaultConfigFile = () => {
@@ -109,7 +109,7 @@ const startTheProcess = () => {
   console.log("### Starting p2pd ###");
 
   //if access key not exits
-  if (!fs.existsSync(Constant.KEY_FILE)) {
+  if (!fs.existsSync(path.join(__dirname,Constant.KEY_FILE))) {
     console.log("Generating new access key");
     generateAndSaveKey();
   } else {
@@ -117,13 +117,13 @@ const startTheProcess = () => {
   }
 
   //check eco system config file missing or not
-  if (!fs.existsSync("ecosystem.config.js")) {
+  if (!fs.existsSync(path.join(__dirname,Constant.PM2_ECOSYSTEM_FILE))) {
     console.log("ecosystem config file missing");
     process.exit(1);
   }
 
   //starting server
-  commandExecutioner("yarn")
+  commandExecutioner(Constant.SERVICE_START_COMMAND, __dirname)
     .then((result) => {
       console.log("### p2pd started successfully ###");
     })
@@ -179,7 +179,7 @@ const startDeploymentProcess = async () => {
 
 //stopping the service
 const stopService = () => {
-  commandExecutioner(Constant.SERVICE_STOP_COMMAND)
+  commandExecutioner(Constant.SERVICE_STOP_COMMAND, {cwd : __dirname})
     .then((result) => {
       console.log("### p2pd stopped successfully ###");
     })
@@ -189,11 +189,11 @@ const stopService = () => {
     });
 };
 
-const updateKey = () => {
+const renew = () => {
   //if access key not exits
-  if (fs.existsSync(Constant.KEY_FILE)) {
+  if (fs.existsSync(path.join(__dirname,Constant.KEY_FILE))) {
     console.log("Removing existing file");
-    fs.unlinkSync(Constant.KEY_FILE);
+    fs.unlinkSync(path.join(__dirname,Constant.KEY_FILE));
   }
 
   console.log("Generating new access key");
@@ -217,7 +217,7 @@ switch (args[2]) {
     stopService();
     break;
   case "renew":
-    updateKey();
+    renew();
     break;
   default:
     errorLog("invalid command passed");

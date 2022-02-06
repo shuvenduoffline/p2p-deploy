@@ -6,7 +6,7 @@ const path = require("path/posix");
 const Constants = require("./Constants");
 const fs = require("fs");
 
-const port = process.env.port || 7861;
+const port = process.env.port || Constant.DEFAULT_PORT;
 const requestListener = async function (req, res) {
   try {
     //request method should be get
