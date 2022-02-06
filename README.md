@@ -12,6 +12,7 @@ Node service running on the remote machine helps you to run ci/cd command from y
 Step 1: Install the application on the remote machine
 
 Step 2: Run 'p2p-deploy start' or 'node . start' if you cloned it, it will generate an access key and start the service on port 7861, you need to open that port
+ (if you got file permission error please run the command with sudo)
 
 Step 3: Install it in your local machine, recommended to install as a dev dependency
 

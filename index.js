@@ -9,7 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const commandExecutioner = require("./commandExecutioner");
 const http = require("http");
-
+const { pathToFileURL } = require('url');
 const generateConfigFile = require("./generateConfigFile");
 const Constant = require("./Constants");
 const { encrypt } = require("./encryption");
@@ -68,7 +68,11 @@ if (commands.indexOf(args[2]) == -1) {
 const takeKeyInput = () => {
   //if key file already exist then continue with key file
   if (fs.existsSync(Constant.KEY_FILE)) {
-    console.log("Continuing with existing key...");
+    console.log(`
+    Continuing with existing key...
+    If you need to update the key, please update the '.key' file.
+    `)
+    generateDefaultConfigFile();
   } else {
     mutableStdout.muted = false;
     const rl = readline.createInterface({
@@ -83,12 +87,15 @@ const takeKeyInput = () => {
       } else {
         console.log("Updating access key!");
         saveAccessKey(input, process.cwd());
-        generateDefaultConfigFile();
       }
+      generateDefaultConfigFile();
     });
 
     mutableStdout.muted = true;
   }
+
+
+
 };
 
 const generateDefaultConfigFile = () => {
@@ -100,7 +107,9 @@ const generateDefaultConfigFile = () => {
     generateConfigFile();
   } else {
     console.log(
-      `Continuing with existing configuration file : ${Constant.CONFIG_FILE_NAME}`
+      `Continuing with existing configuration file : ${Constant.CONFIG_FILE_NAME}
+       Please update it if required!
+      `
     );
   }
 };
@@ -146,11 +155,12 @@ const startDeploymentProcess = async () => {
     process.exit(1);
   }
 
-  const { default: p2pdConfig } = await import(
-    "./" + Constant.CONFIG_FILE_NAME
+
+   const { default: p2pdConfig } = await import(
+   pathToFileURL(path.join(process.cwd(),Constant.CONFIG_FILE_NAME)).href
   );
   console.log(p2pdConfig);
-
+  
   const server = p2pdConfig.server;
   const port = p2pdConfig.port;
 
