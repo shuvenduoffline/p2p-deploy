@@ -1,0 +1,13 @@
+{
+  "name": "p2p-deploy",
+  "version": "1.0.0",
+  "description": "p2p deploy is a service that hosted on remote machine helps you to run remote commands (CI/CD) from your local computer.",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": ["p2pd","peer to peer deployment", "p2p deployment","p2p code run"],
+  "author": "shuvenduoffline",
+  "license": "MIT"
+}
