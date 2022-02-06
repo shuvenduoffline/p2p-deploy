@@ -3,7 +3,7 @@ const commandExecutioner = require("./commandExecutioner");
 const url = require("url");
 const { decrypt } = require("./encryption");
 const path = require("path/posix");
-const Constants = require("./Constants");
+const Constant = require("./Constants");
 const fs = require("fs");
 
 const port = process.env.port || Constant.DEFAULT_PORT;
