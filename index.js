@@ -24,11 +24,23 @@ const mutableStdout = new Writable({
 const args = process.argv;
 
 //allowed commands
-const commands = ["start", "stop", "renew", "setup", "help", "deploy"];
+const commands = ["start", "stop", "keygen", "setup", "help", "deploy"];
 
 // usage represents the help guide
 const usage = function () {
   const usageText = `
+      _____ ___  _____        _____  ______ _____  _      ______     __
+  |  __ \__ \|  __ \      |  __ \|  ____|  __ \| |    / __ \ \   / /
+  | |__) | ) | |__) |_____| |  | | |__  | |__) | |   | |  | \ \_/ / 
+  |  ___/ / /|  ___/______| |  | |  __| |  ___/| |   | |  | |\   /  
+  | |    / /_| |          | |__| | |____| |    | |___| |__| | | |   
+  |_|   |____|_|          |_____/|______|_|    |______\____/  |_|   
+
+  Deployement service thats run on server and communicate directy with local machine                                                                  
+
+  Dev : https://shuvenduoffline.github.io/
+  Github : https://github.com/shuvenduoffline/p2p-deploy
+
   p2p-deploy helps you updated deployed app on remote server.
 
   usage:
@@ -36,12 +48,12 @@ const usage = function () {
 
     commands can be:
 
-    start:    start/restart the p2pd server
-    stop:     stop the p2pd server
-    deploy:   update the code in remote machine
-    renew:    update the exiting key
-    setup:    used to generate config file
-    help:     used to print the usage guide
+    start:    start/restart the p2pd server (on server.  do not use sudo)
+    stop:     stop the p2pd server   (on server)
+    deploy:   update the code in remote machine  (on client)
+    keygen:   delete if key exists, generate new key (run with sudo)
+    setup:    used to generate config file  (on repro you wants to deploy)
+    help:     used to print the usage guide 
   `;
 
   console.log(usageText);
@@ -59,11 +71,7 @@ if (args.length > 3) {
   return;
 }
 
-//if not a valid command
-if (commands.indexOf(args[2]) == -1) {
-  usage();
-  return;
-}
+
 
 const takeKeyInput = () => {
   //if key file already exist then continue with key file
@@ -115,12 +123,27 @@ const generateDefaultConfigFile = () => {
 };
 
 const startTheProcess = () => {
-  console.log("### Starting p2pd ###");
+  console.log(`
+    _____ ___  _____        _____  ______ _____  _      ______     __
+ |  __ \__ \|  __ \      |  __ \|  ____|  __ \| |    / __ \ \   / /
+ | |__) | ) | |__) |_____| |  | | |__  | |__) | |   | |  | \ \_/ / 
+ |  ___/ / /|  ___/______| |  | |  __| |  ___/| |   | |  | |\   /  
+ | |    / /_| |          | |__| | |____| |    | |___| |__| | | |   
+ |_|   |____|_|          |_____/|______|_|    |______\____/  |_|   
+
+ Deployement service thats run on server and communicate directy with local machine                                                                  
+
+ Dev : https://shuvenduoffline.github.io/
+ Github : https://github.com/shuvenduoffline/p2p-deploy
+
+ Starting service...                                                                
+  `)
 
   //if access key not exits
   if (!fs.existsSync(path.join(__dirname,Constant.KEY_FILE))) {
-    console.log("Generating new access key");
-    generateAndSaveKey();
+    console.log("Please generate a access key first.");
+    console.log("Run 'p2p-deploy help' for more info")
+    return
   } else {
     console.log("Using existing key file..");
   }
@@ -134,7 +157,7 @@ const startTheProcess = () => {
   //starting server
   commandExecutioner(Constant.SERVICE_START_COMMAND, __dirname)
     .then((result) => {
-      console.log("### p2pd started successfully ###");
+      console.log("### p2p-deploy started successfully ###");
     })
     .catch((error) => {
       console.log(error);
@@ -160,7 +183,7 @@ const startDeploymentProcess = async () => {
    pathToFileURL(path.join(process.cwd(),Constant.CONFIG_FILE_NAME)).href
   );
   console.log(p2pdConfig);
-  
+
   const server = p2pdConfig.server;
   const port = p2pdConfig.port;
 
@@ -189,9 +212,9 @@ const startDeploymentProcess = async () => {
 
 //stopping the service
 const stopService = () => {
-  commandExecutioner(Constant.SERVICE_STOP_COMMAND, {cwd : __dirname})
+  commandExecutioner(Constant.SERVICE_STOP_COMMAND, __dirname)
     .then((result) => {
-      console.log("### p2pd stopped successfully ###");
+      console.log("### p2p-deploy stopped successfully ###");
     })
     .catch((error) => {
       console.log(error);
@@ -199,7 +222,7 @@ const stopService = () => {
     });
 };
 
-const renew = () => {
+const keygen = () => {
   //if access key not exits
   if (fs.existsSync(path.join(__dirname,Constant.KEY_FILE))) {
     console.log("Removing existing file");
@@ -209,6 +232,20 @@ const renew = () => {
   console.log("Generating new access key");
   generateAndSaveKey();
 };
+
+
+
+//bear bone run
+if(args.length === 2){
+startTheProcess()
+return
+}
+
+//if not a valid command
+if (commands.indexOf(args[2]) == -1) {
+  usage();
+  return;
+}
 
 switch (args[2]) {
   case "help":
@@ -226,8 +263,8 @@ switch (args[2]) {
   case "stop":
     stopService();
     break;
-  case "renew":
-    renew();
+  case "keygen":
+    keygen();
     break;
   default:
     errorLog("invalid command passed");
