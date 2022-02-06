@@ -39,7 +39,7 @@ const usage = function () {
     stop:     stop the p2pd server
     deploy:   update the code in remote machine
     renew:    update the exiting key
-    setup:    used to mark a todo as complete
+    setup:    used to generate config file
     help:     used to print the usage guide
   `;
 

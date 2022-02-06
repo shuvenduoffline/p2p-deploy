@@ -8,6 +8,12 @@
     "start": "node index.js"
   },
   "keywords": ["p2pd","peer to peer deployment", "p2p deployment","p2p code run"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuvenduoffline/p2p-deploy.git"
+  },
+  "homepage": "https://github.com/shuvenduoffline/p2p-deploy.git#readme",
   "author": "shuvenduoffline",
   "license": "MIT"
+
 }
