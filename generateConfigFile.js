@@ -1,10 +1,9 @@
 const { writeFileSync } = require("fs");
 const path = require("path");
 
-const getDefaultData = () =>
+const getDefaultData = (serverAddress) =>
   `module.exports = ${JSON.stringify({
-    server: "localhost",
-    port: 7861,
+    server: serverAddress,
     basePath: "/home/ubuntu",
     directory: path.basename(process.cwd()),
     steps: [
@@ -27,9 +26,9 @@ const getDefaultData = () =>
     ],
   })}`;
 
-const generateConfigFile = () => {
+const generateConfigFile = (serverAddress) => {
   try {
-    const data = getDefaultData();
+    const data = getDefaultData(serverAddress);
     writeFileSync("p2pd.config.js", data);
   } catch (error) {
     console.log("Error : ", error);

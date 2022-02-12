@@ -34,7 +34,7 @@ const requestListener = async function (req, res) {
 
     const steps = decryptedMessageObj.steps;
     for (let i = 0; i < steps.length; i++) {
-      console.log("Running step : " + steps[i].name);
+      res.write(`Running step : ${steps[i].name}`);
       await commandExecutioner(steps[i].command, commandPath, res);
     }
 
