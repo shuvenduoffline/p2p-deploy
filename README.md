@@ -11,15 +11,63 @@ Node service running on the remote machine helps you to run ci/cd command from y
 
 (Beta phase, Tested working)
 
-# Install (recomanded)
+[![npm](https://img.shields.io/badge/npm-p2p--deploy-orange)](https://www.npmjs.com/package/p2p-deploy)
 
-npm i -g p2p-deploy
+## Why
+Github actions, Jenkins all those ci/cd tools are very great and production-ready, but as a small individual project builder using those solutions requires a lot of configuration and is not much convenient to use. 
 
-# dependency
+## How
+The p2p-deploy runs a server application on your server and listens for any ci/cd commands requested from the client. The connection between client and server is p2p and secured with strong password encryption. Its displays the output of the commands in realtime on your local machine. 
 
-1. pm2: For continuous running the service, you can use nohup or create a service file too.
+## Install 
 
-# How to Use
+``` shell
+$ npm i -g p2p-deploy
+```
+
+## dependency
+
+pm2: For continuous running the service, you can use nohup or create a service file too.
+
+## Command line usage
+
+### Server
+
+##### Generate the key for a secured connection
+
+``` shell
+$ sudo p2p-deploy keygen
+```
+sudo is required for writting on a file.
+
+##### Start the server applcation
+
+``` shell
+$ p2p-deploy start
+```
+
+### Client (on your local computer)
+
+##### On the repro path run
+
+``` shell
+p2p-deploy setup
+```
+It will ask access key and host url where the server application is running. It will generate 'p2pd.config.js' file. Modify its content as you need.
+
+##### To run the commands on server
+
+``` shell
+p2p-deploy deploy
+```
+
+#### See all the commands 
+
+``` shell
+p2p-deploy help
+```
+
+# How to Use Detail Instructions
 
 Step 1: Install the application on the remote machine
 
@@ -38,11 +86,17 @@ Step 6: Run 'p2p-deploy deploy' to deploy the updates.
 
 Step 7: Run 'p2p-deploy help' to know more commands.
 
+# Limitations
+
+```cd``` and ```sudo``` command is not allowed for security reasons.
+
+
 # Prerequisite
 
 1. Clone the repro in the base path file on the server first time
-2. Keep logged in in git (so that it didn't ask for a password when running git pull)
+2. Keep logged in in git (so that it didn't ask for a password when running git pull if you use git commands)
 3. Install pm2 on your system
+
 
 **Note**
 
