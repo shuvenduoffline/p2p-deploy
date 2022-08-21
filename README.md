@@ -9,7 +9,6 @@ d8888b. .d888b. d8888b.        d8888b. d88888b d8888b. db       .d88b.  db    db
 
 Node service running on the remote machine helps you to run ci/cd command from your local machine.
 
-(Beta phase, Tested working)
 
 [![npm](https://img.shields.io/badge/npm-p2p--deploy-orange)](https://www.npmjs.com/package/p2p-deploy)
 
@@ -38,9 +37,9 @@ pm2: For continuous running the service, you can use nohup or create a service f
 ``` shell
 $ sudo p2p-deploy keygen
 ```
-sudo is required for writting on a file.
+sudo is required for writing on a file.
 
-##### Start the server applcation
+##### Start the server application
 
 ``` shell
 $ p2p-deploy start
@@ -53,7 +52,7 @@ $ p2p-deploy start
 ``` shell
 p2p-deploy setup
 ```
-It will ask access key and host url where the server application is running. It will generate 'p2pd.config.js' file. Modify its content as you need.
+It will ask host url and access key where the server application is running. It will generate 'p2pd.config.js' file. Modify its content as you need.
 
 ##### To run the commands on server
 

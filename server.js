@@ -14,9 +14,9 @@ const requestListener = async function (req, res) {
 
     const encryptedCommand = url.parse(req.url, true).query?.data;
 
-    if (!encryptedCommand) return res.end("Hello from p2p deploy service!");
+    if (!encryptedCommand) return res.end(Constant.SERVER_HELLO_MESSAGE);
 
-    console.log("Encrypted : " + encryptedCommand);
+    //console.log("Encrypted : " + encryptedCommand);
     res.writeHead(200, { "Content-Type": "text/plain" });
 
     const decryptedMessage = decrypt(encryptedCommand);
@@ -33,6 +33,22 @@ const requestListener = async function (req, res) {
     if (!fs.existsSync(commandPath)) return res.end("Directory Do not exists");
 
     const steps = decryptedMessageObj.steps;
+
+    //check if sudo or cd command present, then end execution
+    for (let i = 0; i < steps.length; i++) {
+      const command =  steps[i].command
+      if(command.startWith('cd')){
+        res.end("'cd'/change directory command is blocked/not allowed for security reason!");
+        return
+      }
+
+      if(command.startWith('sudo')){
+        res.end("'sudo' command is blocked/not allowed for security reason!");
+        return
+      }
+    }
+
+
     for (let i = 0; i < steps.length; i++) {
       res.write(`Running step : ${steps[i].name}`);
       await commandExecutioner(steps[i].command, commandPath, res);

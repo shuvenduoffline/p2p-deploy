@@ -1,13 +1,15 @@
 const { exec } = require("child_process");
-const path = require("path");
 const fs = require("fs");
 
+/**
+ * Run the command in the directory
+ * @param {string} command
+ * @param {string} cwd
+ * @param {Response} res
+ * @returns result in Response stream
+ */
 const commandExecutioner = (command, cwd = process.cwd(), res = null) =>
   new Promise((resolve, reject) => {
-    console.log(command);
-    console.log(cwd);
-    // console.log(res);
-
     //check if path exits
     if (!fs.existsSync(cwd)) return reject("Directory doesn't exists!!");
 
@@ -16,13 +18,13 @@ const commandExecutioner = (command, cwd = process.cwd(), res = null) =>
       return reject("Path is not a directory!!");
 
     const options = { cwd };
-    console.log(options);
     const childProcess = exec(command, options);
 
     childProcess.stdout.on("data", function (data) {
       console.log(data);
       res?.write(data);
     });
+    ō;
 
     childProcess.stderr.on("data", function (data) {
       console.log(data);
@@ -30,17 +32,17 @@ const commandExecutioner = (command, cwd = process.cwd(), res = null) =>
     });
 
     childProcess.on("close", (code) => {
-      // console.log(`child process close all stdio with code ${code}`);
       if (code === 0) {
         resolve("Done!");
       } else {
+        console.log(`Child process close all stdio with code ${code}`);
         res?.end("Something went wrong");
         reject("Something went wrong!");
       }
     });
 
     childProcess.on("exit", (code) => {
-      // console.log(`child process exited with code ${code}`);
+      console.log(`Child process exited with code ${code}`);
     });
 
     childProcess.on("error", (error) => {
